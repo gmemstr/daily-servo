@@ -30,4 +30,4 @@ jobs:
             [dns]
               nameservers=["1.1.1.1", "1.0.0.1" ]
       - name: Docker Build
-        run: docker build . -f dockerfiles/Dockerfile.servo -t git.gmem.ca/arch/servo:latest -t git.gmem.ca/arch/servo:$(date -I) --push --progress=plain --builder=${{ steps.buildx.outputs.name }}
+        run: docker build . -f Containerfile.servo -t git.gmem.ca/arch/servo:latest -t git.gmem.ca/arch/servo:$(date -I) --push --progress=plain --builder=${{ steps.buildx.outputs.name }}
