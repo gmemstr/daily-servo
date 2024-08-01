@@ -1,0 +1,15 @@
+FROM docker.io/debian:bookworm-slim
+
+RUN apt update && apt upgrade && \
+	apt install -y curl libunwind8 libfontconfig1 libx11-6 libwayland-client0 \
+	mesa-utils libgl1-mesa-glx xkb-data libxkbcommon-x11-0 && \
+	apt-get clean autoclean && \
+	apt-get autoremove --yes && \
+	rm -rf /var/lib/{apt,dpkg,cache,log}/
+
+RUN curl -LO https://download.servo.org/nightly/linux/servo-latest.tar.gz && \
+	tar -xvf servo-latest.tar.gz && \
+	mv servo /opt && ln -s /opt/servo/servo /usr/local/bin && \
+	rm servo-latest.tar.gz
+
+ENTRYPOINT ["/usr/local/bin/servo"]

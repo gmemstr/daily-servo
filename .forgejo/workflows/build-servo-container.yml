@@ -1,0 +1,33 @@
+name: Build Servo Image
+on:
+  schedule:
+    - cron: "0 1 * * *"
+  push:
+    paths:
+      - 'Containerfile.servo'
+      - '.forgejo/workflows/build-servo-container.yml'
+jobs:
+  build:
+    runs-on: vancouver
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3.5.3
+        with:
+          ref: main
+      - name: Login to Registry
+        uses: https://github.com/docker/login-action@v3
+        with:
+          registry: git.gmem.ca/arch
+          username: arch
+          password: ${{ secrets.REGISTRY_TOKEN }}
+      - name: Set up Docker Buildx
+        id: buildx
+        uses: https://github.com/docker/setup-buildx-action@v3
+        with:
+          endpoint: "unix:///var/run/docker.sock"
+          driver-opts: network=host
+          buildkitd-config-inline: |
+            [dns]
+              nameservers=["1.1.1.1", "1.0.0.1" ]
+      - name: Docker Build
+        run: docker build . -f dockerfiles/Dockerfile.servo -t git.gmem.ca/arch/servo:latest -t git.gmem.ca/arch/servo:$(date -I) --push --progress=plain --builder=${{ steps.buildx.outputs.name }}
