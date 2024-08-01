@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+	<meta name="description" content="Daily Servo">
+	<style>
+	  body {
+		background-color: black;
+		color: lightgray;
+	  }
+	  main {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		flex-direction: column;
+	  }
+	  a:visited {
+		color: white;
+	  }
+	  img {
+		max-width: 100%;
+	  }
+	</style>
+  </head>
+  <body>
+	<main><div id="error"></div>
+	  <a id="img-link" href="/latest"><img id="img" src="/latest" /></a>
+	  <p id="date"></p>
+	  <p>renders of my website using <a href="https://servo.org/">servo</a> to track progress.</p>
+	  <footer>
+		made by <a href="https://arch.dog" target="_blank">arch</a>
+	  </footer>
+	</main>
+  </body>
+</html>

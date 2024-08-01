@@ -1,0 +1,13 @@
+#:schema node_modules/wrangler/config-schema.json
+name = "daily-servo"
+main = "src/index.js"
+compatibility_date = "2024-07-25"
+compatibility_flags = ["nodejs_compat"]
+
+[[kv_namespaces]]
+binding = "KV_STORE"
+id = "eddd851b2439407a877c0c2c6e503da2"
+
+[[r2_buckets]]
+binding = "R2_BUCKET"
+bucket_name = "daily-servo"
