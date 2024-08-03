@@ -107,7 +107,13 @@ export default {
 		  hash,
 		  file
 		} = Object.fromEntries(body)
-		await bucket.put(`${hash}.png`, file);
+
+		// Don't bother uploading to R2 if the hashes match.
+		let latest = kv.get("LATEST");
+		if (latest != hash) {
+		  await bucket.put(`${hash}.png`, file);
+		}
+
 		await kv.put("LATEST", hash, {
 		  metadata: { date: date }
 		});
