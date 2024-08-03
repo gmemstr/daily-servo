@@ -11,11 +11,23 @@ About
 Various tools for rendering and sharing snapshots of websites using Servo, primarily to track [my own site](https://servo.arch.dog)
 over time.
 
-`main.py` is a wrapper around Docker for rendering a screenshot then producing a hash of the image. This can help
+`snapshot.sh` is a wrapper around Docker for rendering a screenshot then producing a hash of the image. This can help
 indicate when Servo's rendering has changed. If you get inconsistant results with the same version and site, see
 [this GitHub issue](https://github.com/servo/servo/issues/32771).
 
 `worker/` is a small Cloudflare Worker for collecting and serving the images. Currently requires manual uploading.
+
+snapshot.sh
+---
+
+Generating snapshots is easy but requires a few commands to be run in sequence. `snapshot.sh` wraps:
+
+* Pulling the latest container image
+* Running the container image with a volume mount to produce a snapshot
+* Hashing the image
+* Uploading the image to a Worker endpoint (see below)
+
+Uploading the image is optional, provided `--dry-run` is passed.
 
 Worker
 ---
