@@ -16,7 +16,7 @@ snapshot() {
 }
 
 hash() {
-	checksum=$(md5sum "$1" | awk '{print $1}')
+	local checksum=$(md5sum "$1" | awk '{print $1}')
 	echo "$checksum"
 }
 
