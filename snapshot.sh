@@ -1,6 +1,16 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+check_dependencies() {
+  local commands=("docker" "sha1sum" "curl" "mktemp" "date" "awk")
+  for cmd in "${commands[@]}"; do
+    if ! command -v "$cmd" &> /dev/null; then
+      echo "Error: $cmd is not available." >&2
+      exit 1
+    fi
+  done
+}
+
 snapshot() {
 	docker run --rm -v /tmp:/tmp git.gmem.ca/arch/servo:latest "$1" -z -y2 -o"$2" --resolution=1920x1080
 }
@@ -22,6 +32,7 @@ post() {
 		 "${4}" -s > /dev/null
 }
 
+check_dependencies
 
 # Default value for dry-run flag
 DRYRUN='false'
