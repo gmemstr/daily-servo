@@ -6,6 +6,7 @@ import hashlib
 URL = 'https://arch.dog'
 
 def main():
+    subprocess.run(['/usr/bin/docker', 'pull', 'git.gmem.ca/arch/servo:latest'])
     filename = os.path.join('/tmp', str(uuid.uuid4()))
     ARGS = ['-z', '-y2', f'-o{filename}', '--resolution=1920x1080']
     print(f'rendering {URL} to {filename}')
