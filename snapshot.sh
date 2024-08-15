@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+TMPDIR="${TMPDIR:-/tmp}"
+
 check_dependencies() {
   local commands=("docker" "sha1sum" "curl" "mktemp" "date" "awk")
   for cmd in "${commands[@]}"; do
