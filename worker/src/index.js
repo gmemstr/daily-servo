@@ -105,6 +105,9 @@ async function withAuth(request, env, ctx) {
 }
 
 async function newSnapshot(request, env, ctx) {
+  const kv = env.KV_STORE;
+  const bucket = env.R2_BUCKET;
+
   const body = await request.formData();
   const {
 	date,
