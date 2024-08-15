@@ -1,0 +1,21 @@
+name: Create Snapshot
+on:
+  schedule:
+    - cron: "0 8 * * *"
+  push:
+    paths:
+      - 'snapshot.sh'
+      - '.forgejo/workflows/snapshot.yml'
+jobs:
+  build:
+    runs-on: vancouver
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3.5.3
+        with:
+          ref: main
+      - name: Create Snapshot
+        run: ./snapshot.sh https://arch.dog https://servo.arch.dog/new
+        env:
+          SERVO_API_TOKEN: ${{ secrets.SERVO_API_TOKEN }}
+          TMPDIR: "."
