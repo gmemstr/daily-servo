@@ -12,7 +12,7 @@ check_dependencies() {
 }
 
 snapshot() {
-	docker run --rm -v /tmp:/tmp git.gmem.ca/arch/servo:latest "$1" -z -y2 -o"$2" --resolution=1920x1080
+	docker run --rm -v $TMPDIR:/tmp git.gmem.ca/arch/servo:latest "$1" -z -y2 -o"/tmp/$(basename ${2})" --resolution=1920x1080
 }
 
 hash() {
