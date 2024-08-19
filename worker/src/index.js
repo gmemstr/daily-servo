@@ -137,6 +137,7 @@ async function newSnapshot(request, env, ctx) {
 	  await env.WEBHOOKS_QUEUE.send({
 		type: webhook.type,
 		url: webhook.url,
+		auth: webhook.auth ?? "",
 		hash: hash,
 		date: date,
 		file: `https://daily-servo-r2.gmem.ca/${hash}.png`
@@ -180,6 +181,7 @@ ROUTER
   .get("/latest.json", withCache, snapshot)
   .get("/list.json", withCache, snapshotList)
   .post("/new", withAuth, newSnapshot)
+  .get("/favicon.ico", favicon)
   // .get("/migrate", withAuth, migrateKeys)
   .get("*", withCache, specificSnapshot)
 
@@ -190,6 +192,8 @@ export default {
     .then(json)
     .catch(error),
   async queue(batch, env) {
+	const { versionId, versionTag, versionTimestamp } = env.CF_VERSION_METADATA;
+
 	for (const msg of batch.messages) {
 	  let content = msg.body;
 	  let payload = "Daily Servo image hash changed!";
@@ -202,12 +206,21 @@ export default {
 		};
 		content_type = "application/json";
 	  }
+	  if (content.type == "gotosocial") {
+		payload = {
+		  status: `[Daily Servo](<https://servo.gmem.ca>) update ${content.date} (${content.hash})\n\n${content.file}`,
+		  content_type: 'text/markdown',
+		};
+		content_type = "application/json";
+	  }
 	  let response = await fetch(`${content.url}`, {
 		method: "POST",
 		body: JSON.stringify(payload),
 		headers: {
           "X-Source": "Cloudflare-Workers",
+		  "User-Agent": `DAILY-SERVO ${versionId}`,
 		  "Content-Type": content_type,
+		  ...(content.auth != "" && { "Authorization": env[content.auth] })
 		},
       });
 	  if (response.ok) {
