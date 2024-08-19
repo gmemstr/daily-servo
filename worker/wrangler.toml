@@ -11,3 +11,13 @@ id = "eddd851b2439407a877c0c2c6e503da2"
 [[r2_buckets]]
 binding = "R2_BUCKET"
 bucket_name = "daily-servo"
+
+[[queues.producers]]
+binding = "WEBHOOKS_QUEUE"
+queue = "daily-servo-webhooks"
+
+[[queues.consumers]]
+queue = "daily-servo-webhooks"
+max_batch_size = 10
+max_batch_timeout = 5
+max_retries = 2
