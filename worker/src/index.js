@@ -127,7 +127,7 @@ async function newSnapshot(request, env, ctx) {
   } = Object.fromEntries(body)
 
   // Don't bother uploading to R2 if the hashes match.
-  let latest = kv.get(`${SNAPSHOT_PREFIX}LATEST`);
+  let latest = await kv.get(`${SNAPSHOT_PREFIX}LATEST`);
   if (latest != hash) {
 	await bucket.put(`${hash}.png`, file);
 	let webhooks = kv.list(WEBHOOK_KEYS);
@@ -145,7 +145,7 @@ async function newSnapshot(request, env, ctx) {
 	}));
   }
 
-  await kv.put("${SNAPSHOT_PREFIX}LATEST", hash, {
+  await kv.put(`${SNAPSHOT_PREFIX}LATEST`, hash, {
 	metadata: { date: date }
   });
   // Keep for 1 year.
@@ -181,7 +181,6 @@ ROUTER
   .get("/latest.json", withCache, snapshot)
   .get("/list.json", withCache, snapshotList)
   .post("/new", withAuth, newSnapshot)
-  .get("/favicon.ico", favicon)
   // .get("/migrate", withAuth, migrateKeys)
   .get("*", withCache, specificSnapshot)
 
@@ -192,7 +191,7 @@ export default {
     .then(json)
     .catch(error),
   async queue(batch, env) {
-	const { versionId, versionTag, versionTimestamp } = env.CF_VERSION_METADATA;
+	const { tag } = env.CF_VERSION_METADATA;
 
 	for (const msg of batch.messages) {
 	  let content = msg.body;
@@ -218,7 +217,7 @@ export default {
 		body: JSON.stringify(payload),
 		headers: {
           "X-Source": "Cloudflare-Workers",
-		  "User-Agent": `DAILY-SERVO ${versionId}`,
+		  "User-Agent": `DAILY-SERVO ${tag}`,
 		  "Content-Type": content_type,
 		  ...(content.auth != "" && { "Authorization": env[content.auth] })
 		},
