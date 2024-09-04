@@ -130,10 +130,10 @@ async function newSnapshot(request, env, ctx) {
   let latest = await kv.get(`${SNAPSHOT_PREFIX}LATEST`);
   if (latest != hash) {
 	await bucket.put(`${hash}.png`, file);
-	let webhooks = kv.list(WEBHOOK_KEYS);
+	let webhooks = await kv.list(WEBHOOK_KEYS);
 	await Promise.all(webhooks.keys.map(async key => {
 	  let full = await kv.get(key.name);
-	  let webhook = JSON.parse(full.value);
+	  let webhook = JSON.parse(full);
 	  await env.WEBHOOKS_QUEUE.send({
 		type: webhook.type,
 		url: webhook.url,
